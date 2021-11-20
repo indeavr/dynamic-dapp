@@ -49,7 +49,9 @@
             return;
         }
 
-        const DYContract = new Contract(chosenProp.contract, DYNAMIC_NFT_ABI, rpc.signer);
+        console.log("hmm", chosenProp.contract, DYNAMIC_NFT_ABI, rpc.signer);
+
+        const DYContract = new Contract(chosenProp.contract.trim(), DYNAMIC_NFT_ABI, rpc.signer);
 
         const { isConfirmed } = await Swal.fire({
             title: 'Are you sure ?',

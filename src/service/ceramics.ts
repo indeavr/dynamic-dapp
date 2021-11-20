@@ -82,6 +82,17 @@ export const addProposition = async (body: PropositionBody) => {
     }
 };
 
+export const deletePropositon = async (contract: string, id: string) => {
+    console.log("<<< deletePropositon >>>", contract, id);
+    try {
+        const response = await mainAxios.delete("/api/proposition", { params: { contract, id, index: 0 } })
+
+        return { data: response.data, error: null };
+    } catch (error) {
+        return { data: null, error: error };
+    }
+};
+
 export const getPropositions = async (params: { id: string, contract: string }): Promise<Propositions> => {
     try {
         console.log("calling getPropositions", params);

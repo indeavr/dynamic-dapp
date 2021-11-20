@@ -65,7 +65,7 @@
 
 <div class="row">
     <!-- content -->
-    <div class="col-4 col-xl-6">
+    <div class="col-4 col-xl-4">
         <div
                 id="nft-wrapper"
                 class="asset__item"
@@ -78,7 +78,7 @@
     <!-- end content -->
 
     <!-- header -->
-    <div class="col-8 col-xl-6">
+    <div class="col-8 col-xl-8">
         <div class="asset__info">
             <div class="asset__desc">
                 <h1 style="color: white"> {nft.metadata.name}</h1>

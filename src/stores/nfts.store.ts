@@ -164,12 +164,22 @@ function createMyInfoStore(): MyInfoStore {
                     }
                     console.log("-=polynftsonNFTs", i, result);
 
+                    const DYContract = new Contract(coll.contract.trim(), DYNAMIC_NFT_ABI, rpc.signer);
+
                     const nfts = await Promise.all(result.map(async (res) => {
                         let metadata = JSON.parse(res.metadata);
                         if (!metadata) {
                             metadata = await getJSON(res.token_uri);
                         }
-                        const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+
+                        const raw = await DYContract.tokenURI(res.token_id);
+                        console.log("-=raw", raw);
+
+                        const meta = await getJSON(raw.replace("ipfs://", "https://ipfs.io/ipfs/")) as any;
+
+                        const imageUri = meta.image.replace("ipfs://", "https://ipfs.io/ipfs/")
+
+                        // const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
 
                         return {
                             tokenUri: res.token_uri,
@@ -185,6 +195,7 @@ function createMyInfoStore(): MyInfoStore {
                     }
                 } catch (err) {
                     console.error("MORALIS ERR", err)
+                    return undefined;
                 }
                 // [
                 //     {
@@ -202,25 +213,32 @@ function createMyInfoStore(): MyInfoStore {
                 //         "symbol": "RARI"
                 //     }
                 // ]
-                return undefined;
             })
         );
 
-        const flat: MyNFT[] = nftMap.reduce((arr, obj) => {
-            if (obj) {
-                obj.nfts.forEach((rest) => {
-                    arr.push({
-                        contract: obj.contract,
-                        ...rest
-                    });
-                })
-                return arr;
-            }
-        }, []);
+        if (!nftMap) {
+            console.error("No NFTs yet !");
+        }
+
+        console.log("-=nftMap", nftMap);
+
+        const flat: MyNFT[] = nftMap.filter(a => a !== undefined)
+            .reduce((arr, obj) => {
+                if (obj) {
+                    obj.nfts.forEach((rest) => {
+                        arr.push({
+                            contract: obj.contract,
+                            ...rest
+                        });
+                    })
+                    return arr;
+                }
+            }, []);
+
 
         console.log("-=flat", flat);
         const withUpgrades = await Promise.all(flat.map(async (nft, i) => {
-            const DYContract = new Contract(nft.contract, DYNAMIC_NFT_ABI, rpc.signer);
+            const DYContract = new Contract(nft.contract.trim(), DYNAMIC_NFT_ABI, rpc.signer);
 
             const upgrades = await DYContract.getUpgrades(nft.id);
             console.log("-=upgrades", upgrades, i);

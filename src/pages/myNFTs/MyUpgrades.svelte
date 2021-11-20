@@ -3,12 +3,10 @@
     import { connectionProvider } from "../../stores/connection.store";
     import SwalW from "sweetalert2";
     import { onMount } from "svelte";
-    import { proposition } from "../../stores/forms.store";
     import { propositionsStore } from "../../stores/nfts.store";
     import { Contract } from "ethers";
     import { DYNAMIC_NFT_ABI } from "../../abi";
-    import type { Proposition } from "../../types";
-    import { generateMetadataWithoutImage } from "../../service/api";
+    import { deletePropositon } from "../../service/ceramics";
 
     const Swal: any = SwalW;
 
@@ -50,7 +48,7 @@
             return;
         }
 
-        const DYContract = new Contract(myNft.contract, DYNAMIC_NFT_ABI, rpc.signer);
+        const DYContract = new Contract(myNft.contract.trim(), DYNAMIC_NFT_ABI, rpc.signer);
 
         const { isConfirmed } = await Swal.fire({
             title: 'Are you sure ?',
@@ -87,6 +85,8 @@
 
                 try {
                     await tx.wait();
+
+                    await deletePropositon(myNft.contract, myNft.id);
                     // Swal.close()
                     await Swal.fire({
                         title: "Success !",

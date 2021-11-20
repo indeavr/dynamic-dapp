@@ -50,9 +50,13 @@
             return;
         }
 
-
         try {
             await addCollection($collection);
+            await Swal.fire({
+                title: "Success !",
+                confirmButtonText: "Done",
+                icon: "success",
+            });
 
         } catch (e) {
             console.error(e);

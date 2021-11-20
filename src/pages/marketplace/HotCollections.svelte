@@ -47,7 +47,7 @@
         <!-- title -->
         <div class="col-12">
             <div class="main__title" style="margin-top: 20px">
-                <h2>Hot collections</h2>
+                <h2>Collections</h2>
             </div>
         </div>
         <!-- end title -->
