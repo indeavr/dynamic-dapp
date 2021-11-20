@@ -46,7 +46,7 @@
     <section class="row row--grid">
         <!-- title -->
         <div class="col-12">
-            <div class="main__title">
+            <div class="main__title" style="margin-top: 20px">
                 <h2>Hot collections</h2>
             </div>
         </div>

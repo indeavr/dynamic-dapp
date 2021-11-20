@@ -89,8 +89,8 @@
 
 <div class="container">
     <div class="col-12">
-        <div class="main__title">
-            <h2>NFTs</h2>
+        <div class="main__title" style="margin-top: 30px">
+            <h2>Explore</h2>
         </div>
     </div>
 

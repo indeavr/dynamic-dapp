@@ -5,6 +5,7 @@ import type { Propositions, Collections, MyNFT, NFT } from "../types";
 import { getCollections, getPropositions } from "../service/ceramics";
 import { DYNAMIC_NFT_ABI } from "../abi";
 import { Contract } from "ethers";
+import { getJSON } from "../utils";
 
 declare const Moralis: any;
 
@@ -64,29 +65,35 @@ function createNftStore(): NFTStore {
 
                 const options = { address: coll.contract, chain: "mumbai" };
 
-                console.log("GET ALL NFTS", i, options, "0xf30536ea9bcC6F98e6D66f52c7104522C234E2D0");
+                console.log("GET ALL NFTS", i, options);
 
                 try {
                     const res = await Moralis.Web3API.token.getAllTokenIds(options);
                     console.log("->>> response", i, res);
-                    const nfts = res.result;
+                    const result = res.result;
 
-                    console.log("nfts", i, nfts);
+                    console.log("result", i, result);
+
+                    const nfts = await Promise.all(result.map(async (res) => {
+                        let metadata = JSON.parse(res.metadata);
+                        if (!metadata) {
+                            metadata = await getJSON(res.token_uri);
+                        }
+                        const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+
+                        return {
+                            tokenURI: res.token_uri,
+                            metadata,
+                            imageUri,
+                            owner: res,
+                            name: res.name,
+                            id: res.token_id
+                        }
+                    }));
+
                     return {
                         contract: coll.contract,
-                        nfts: nfts.map((res) => {
-                            const metadata = JSON.parse(res.metadata);
-                            const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
-
-                            return {
-                                tokenURI: res.token_uri,
-                                metadata,
-                                imageUri,
-                                owner: res,
-                                name: res.name,
-                                id: res.token_id
-                            }
-                        })
+                        nfts
                     }
                 } catch (err) {
                     console.error("MORALIS ERR", err)
@@ -151,26 +158,30 @@ function createMyInfoStore(): MyInfoStore {
                     const res = await Moralis.Web3API.account.getNFTsForContract(options);
                     console.log("-=>>> response", i, res);
 
-                    const nfts = res?.result;
-                    if (!nfts || nfts.length === 0) {
+                    const result = res?.result;
+                    if (!result || result.length === 0) {
                         return;
                     }
-                    console.log("-=polynftsonNFTs", i, nfts);
+                    console.log("-=polynftsonNFTs", i, result);
 
+                    const nfts = await Promise.all(result.map(async (res) => {
+                        let metadata = JSON.parse(res.metadata);
+                        if (!metadata) {
+                            metadata = await getJSON(res.token_uri);
+                        }
+                        const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
+
+                        return {
+                            tokenUri: res.token_uri,
+                            imageUri,
+                            metadata,
+                            name: res.name,
+                            id: res.token_id
+                        }
+                    }))
                     return {
                         contract: coll.contract,
-                        nfts: nfts.map((res) => {
-                            const metadata = JSON.parse(res.metadata);
-                            const imageUri = metadata.image.replace("ipfs://", "https://ipfs.io/ipfs/");
-
-                            return {
-                                tokenUri: res.token_uri,
-                                imageUri,
-                                metadata,
-                                name: res.name,
-                                id: res.token_id
-                            }
-                        })
+                        nfts
                     }
                 } catch (err) {
                     console.error("MORALIS ERR", err)
@@ -214,12 +225,19 @@ function createMyInfoStore(): MyInfoStore {
             const upgrades = await DYContract.getUpgrades(nft.id);
             console.log("-=upgrades", upgrades, i);
 
+            const extended = await Promise.all(upgrades.map(async (str, i) => {
+                const src = str.replace("ipfs://", "https://ipfs.io/ipfs/")
+
+                const meta = (await getJSON(src));
+                return {
+                    src,
+                    imageUri: (meta as any)?.image.replace("ipfs://", "https://ipfs.io/ipfs/"),
+                    index: i
+                }
+            }))
             return {
                 ...nft,
-                upgrades: upgrades.map((str, i) => ({
-                    src: str.replace("ipfs://", "https://ipfs.io/ipfs/"),
-                    index: i
-                }))
+                upgrades: extended
             }
         }));
         console.log("========= MY FINAL RESULT =========", withUpgrades);

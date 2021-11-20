@@ -143,8 +143,8 @@
                          id="details"
                          class={`asset__action asset__action--verified ${selected === i ? "selected" : "not-selected"}`}
                     >
-                        <a href={upgrade.src} target="_blank" class="img-container">
-                            <img src={upgrade.src} alt="" style="width: 100%">
+                        <a href={upgrade.imageUri} target="_blank" class="img-container">
+                            <img src={upgrade.imageUri} alt="" style="width: 100%">
                         </a>
                         <p>Proposition made for <b>.003 ETH</b> 4 hours ago <br>by <a href="author.html">@erikkk</a></p>
                     </div>
@@ -185,7 +185,7 @@
             class={`asset__btn asset__btn--clr ${isMine ? "disabled" : ""}`}
             on:click={acceptUpgrade}
             type="button">
-        Accept Selected
+        Upgrade
     </button>
 
     <!--    <a href="#modal-bid" style="cursor: pointer"-->

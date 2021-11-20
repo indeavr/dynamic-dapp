@@ -36,3 +36,20 @@ export function httpGet(theUrl) {
         xmlhttp.send();
     })
 }
+
+export function getJSON(url) {
+    return new Promise(resolve => {
+        const xhr = new XMLHttpRequest();
+        xhr.open('GET', url, true);
+        xhr.responseType = 'json';
+        xhr.onload = function() {
+            const status = xhr.status;
+            if (status === 200) {
+                resolve(xhr.response);
+            } else {
+                resolve(xhr.response);
+            }
+        };
+        xhr.send();
+    })
+};
