@@ -7,7 +7,7 @@ const client = new NFTStorage({ token: apiKey });
 
 
 export const mainAxios = axios.create({
-    baseURL: "http://localhost:8080",
+    baseURL: "https://dy-ceramic.herokuapp.com",
 });
 
 export const generateMetadata = async (body, file): Promise<string> => {
