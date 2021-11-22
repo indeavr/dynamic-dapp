@@ -63,6 +63,10 @@
 
             const metadataURI = await generateMetadata($nftMint, file);
 
+            if (!metadataURI) {
+                console.error("NO metadataURI", metadataURI);
+                return;
+            }
             console.log("metadataURI", metadataURI);
 
             const tx: ContractTransaction = await rpc.Factory.mint(metadataURI);
