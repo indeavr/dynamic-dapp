@@ -95,7 +95,7 @@
                 console.error("Wrong Chain !", chainId);
                 Toast.fire({
                     icon: 'error',
-                    title: "Must be on Polygon"
+                    title: "Must be on Polygon Mumbai"
                 })
                 return;
             }
