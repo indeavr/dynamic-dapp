@@ -6,6 +6,7 @@
     import { generateMetadata } from "../service/api";
     import { get } from "svelte/store";
     import type { ContractTransaction } from "ethers/lib/ethers";
+    import { push } from "svelte-spa-router";
 
     const Swal: any = SwalW;
     let account = "";
@@ -61,6 +62,15 @@
         try {
             const rpc = get(connectionProvider);
 
+            Swal.fire({
+                title: 'Generating IPFS URI ... ',
+                icon: 'info',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                },
+            })
+
             const metadataURI = await generateMetadata($nftMint, file);
 
             if (!metadataURI) {
@@ -88,7 +98,8 @@
                     confirmButtonText: "Done",
                     icon: "success",
                 });
-                window.location.reload();
+                // window.location.reload();
+                // push("/#")
             } catch (err) {
                 console.error(err);
                 const filter = /transactionHash="(.*)"/

@@ -1,13 +1,15 @@
 import axios from "axios";
 import { NFTStorage, FormData } from "nft.storage";
 
-const apiKey = import.meta.env.VITE_NFT_STORAGE_KEY as any;
+const nftStorageApiKey = import.meta.env.VITE_NFT_STORAGE_KEY as any;
+const apiUrl = import.meta.env.VITE_API_URL as any;
 
-const client = new NFTStorage({ token: apiKey });
+const client = new NFTStorage({ token: nftStorageApiKey });
 
 
+console.log("apiUrl", apiUrl)
 export const mainAxios = axios.create({
-    baseURL: "https://dy-ceramic.herokuapp.com",
+    baseURL: apiUrl,
 });
 
 export const generateMetadata = async (body, file): Promise<string> => {

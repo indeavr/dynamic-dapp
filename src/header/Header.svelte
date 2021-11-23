@@ -29,43 +29,47 @@
         toast: true,
         position: 'top-end',
         showConfirmButton: false,
-        // timer: 3000,
-        // timerProgressBar: true,
+        timer: 1500,
+        timerProgressBar: true,
         didOpen: (toast) => {
             toast.addEventListener('mouseenter', Swal.stopTimer)
             toast.addEventListener('mouseleave', Swal.resumeTimer)
         }
     })
 
-    let loggedIn = isLogged();
+
     const onButtonClick = () => {
         callback();
     };
 
-    const moralisLogin = async () => {
-        console.log("<< LOGG IN", loggedIn);
-        if (!loggedIn) {
-            moralisButton = "Logging ..."
+    let loggedInMoralis = isLogged();
 
-            user = await login()
-            Toast.fire({
-                icon: 'success',
-                title: "Connected to Ceramic & Moralis !"
-            })
-            moralisButton = "Sign Out"
+    console.log("loggedInMoralis", loggedInMoralis, isConnected);
+
+    const moralisLogin = async () => {
+        moralisButton = "Logging ..."
+
+        user = await login()
+        Toast.fire({
+            icon: 'success',
+            title: "Connected to Ceramic & Moralis !"
+        })
+
+        moralisButton = "Sign Out"
+        loggedInMoralis = true;
+    }
+
+    const onSign = async () => {
+        console.log("<< LOGG IN", loggedInMoralis);
+        if (!loggedInMoralis) {
+            await moralisLogin()
+            loggedInMoralis = true;
         } else {
             await logOut()
             moralisButton = "Sign In"
+            loggedInMoralis = false;
         }
-
-        loggedIn = !loggedIn;
     }
-
-    authenticatedClient().then((cer) => {
-        ceramicProvider.update(() => cer);
-        console.log("<<< CONNECTED TO CERAMIC >>>", cer);
-    })
-
 
     try {
         const web3Modal = new Web3Modal({
@@ -84,6 +88,15 @@
             },
             disableInjectedProvider: false,
         });
+
+        const signIn = async () => {
+            authenticatedClient().then((cer) => {
+                ceramicProvider.update(() => cer);
+                console.log("<<< CONNECTED TO CERAMIC >>>", cer);
+            })
+
+            moralisLogin();
+        }
 
         const fetchAccountData = async () => {
             const provider = new ethers.providers.Web3Provider(
@@ -138,6 +151,7 @@
             });
 
             await fetchAccountData();
+            await signIn()
             isConnected = true;
         };
 
@@ -200,7 +214,7 @@
 <header class="header">
     <div class="header__content">
         <div class="header__logo">
-            <a href="/">
+            <a href="/#">
                 <img src="./logo/dylogo1.png" alt="">
             </a>
         </div>
@@ -271,7 +285,7 @@
                                 <path d="M4,12a1,1,0,0,0,1,1h7.59l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l4-4a1,1,0,0,0,.21-.33,1,1,0,0,0,0-.76,1,1,0,0,0-.21-.33l-4-4a1,1,0,1,0-1.42,1.42L12.59,11H5A1,1,0,0,0,4,12ZM17,2H7A3,3,0,0,0,4,5V8A1,1,0,0,0,6,8V5A1,1,0,0,1,7,4H17a1,1,0,0,1,1,1V19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V16a1,1,0,0,0-2,0v3a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V5A3,3,0,0,0,17,2Z"/>
                             </svg>
                             <span style="cursor: pointer">Disconnect</span></a></li>
-                        <li><a on:click={moralisLogin}>
+                        <li><a on:click={onSign}>
                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                 <path d="M4,12a1,1,0,0,0,1,1h7.59l-2.3,2.29a1,1,0,0,0,0,1.42,1,1,0,0,0,1.42,0l4-4a1,1,0,0,0,.21-.33,1,1,0,0,0,0-.76,1,1,0,0,0-.21-.33l-4-4a1,1,0,1,0-1.42,1.42L12.59,11H5A1,1,0,0,0,4,12ZM17,2H7A3,3,0,0,0,4,5V8A1,1,0,0,0,6,8V5A1,1,0,0,1,7,4H17a1,1,0,0,1,1,1V19a1,1,0,0,1-1,1H7a1,1,0,0,1-1-1V16a1,1,0,0,0-2,0v3a3,3,0,0,0,3,3H17a3,3,0,0,0,3-3V5A3,3,0,0,0,17,2Z"/>
                             </svg>
@@ -286,9 +300,9 @@
                 </div>
             {/if}
 
-            {#if isConnected && !loggedIn}
+            {#if isConnected && !loggedInMoralis}
                 <div class="header__action header__action--signin">
-                    <a class="header__action-btn header__action-btn--signin" on:click={moralisLogin}>
+                    <a class="header__action-btn header__action-btn--signin" on:click={onSign}>
                         <span>{moralisButton}</span>
                     </a>
                 </div>

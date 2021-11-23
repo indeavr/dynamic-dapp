@@ -14,7 +14,7 @@
 
     console.log("------------- Fetching all collections")
     await collectionsStore.getAll()
-    console.log("-------------  Fetched !")
+    console.log("-------------  Fetched (cols) !")
   }
 
   const onCollectionsChanged = async (collections: any) => {

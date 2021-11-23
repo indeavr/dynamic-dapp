@@ -55,10 +55,11 @@
         <!-- carousel -->
         <div class="col-12">
             <div class="main__carousel-wrap">
-                <div class="row main__carousel main__carousel--collections owl-carousel" id="collections" style="margin-top: 40px;display: flex">
+                <div class="row" id="collections" style="margin-top: 40px;display: flex">
 
-                    {#each $collectionsStore as coll, i (coll.contract)}
-                        <div class="collection col-4" id={`slide-${i}`} style="display: inline-block;width: 95%; overflow: visible">
+                    {#each $collectionsStore as coll, i}
+                        <div class="collection col-4" id={`slide-${i}`}
+                             style="display: inline-block;width: 95%; overflow: visible">
                             <a href="#" class="collection__cover" data-bg="img/bg/bg-small.png"></a>
                             <div class="collection__meta">
                                 <a href="#" class="collection__avatar collection__avatar--verified">

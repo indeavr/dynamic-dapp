@@ -50,6 +50,15 @@
     const makeProposition = async (event) => {
         const { file } = event.detail;
 
+        Swal.fire({
+            title: 'Generating IPFS URI ... ',
+            icon: 'info',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading()
+            },
+        })
+
         const metadataUrl = await generateMetadataImage(file)
 
         if (!metadataUrl) {

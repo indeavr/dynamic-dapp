@@ -23,6 +23,8 @@ const getDefinitions = async () => {
     }
 };
 
+export let isConnectedToCeramic = false;
+
 async function authenticatedClient(
     provider = null,
     endpoint = "https://ceramic-clay.3boxlabs.com",

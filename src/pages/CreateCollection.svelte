@@ -5,6 +5,8 @@
     import SwalW from 'sweetalert2';
     import type { Connection } from "../types";
     import { addCollection } from "../service/ceramics";
+    import { push, replace } from "svelte-spa-router";
+
 
     const Swal: any = SwalW;
     let account = "";
@@ -58,6 +60,7 @@
                 icon: "success",
             });
 
+            // window.location.reload();
         } catch (e) {
             console.error(e);
             Swal.fire({
