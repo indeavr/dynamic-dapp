@@ -12,9 +12,7 @@
       return;
     }
 
-    console.log("------------- Fetching all collections")
     await collectionsStore.getAll()
-    console.log("-------------  Fetched (cols) !")
   }
 
   const onCollectionsChanged = async (collections: any) => {
@@ -23,9 +21,7 @@
       return;
     }
 
-    console.log("------------- Fetching all nfts")
     await nftStore.getAll()
-    console.log("-------------  Fetched !")
   }
 
   $: onConnectionChanged($ceramicProvider);

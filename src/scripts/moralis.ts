@@ -35,16 +35,3 @@ export async function logOut() {
     await Moralis.User.logOut();
     console.log("logged out");
 }
-
-// document.getElementById("btn-login").onclick = login;
-// document.getElementById("btn-logout").onclick = logOut;
-
-/** Useful Resources  */
-
-// https://docs.moralis.io/moralis-server/users/crypto-login
-// https://docs.moralis.io/moralis-server/getting-started/quick-start#user
-// https://docs.moralis.io/moralis-server/users/crypto-login#metamask
-
-/** Moralis Forum */
-
-// https://forum.moralis.io/
